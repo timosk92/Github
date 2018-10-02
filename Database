@@ -1,0 +1,5 @@
+newEmployee = input("Name?: ")
+
+employees = employees + [newEmployee]
+
+print (employees)
