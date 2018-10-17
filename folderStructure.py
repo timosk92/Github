@@ -1,3 +1,17 @@
+'''
+MAYA COMMAND
+
+import sys
+
+sys.path.append('C:/Snek')
+import folderStructure as fold; reload(fold);
+
+fold.tk_folderStructure()
+
+
+'''
+
+
 import maya.cmds as cmds
 import shutil as shutil
 import os
