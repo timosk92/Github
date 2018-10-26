@@ -1,13 +1,9 @@
 '''
 MAYA COMMAND
-
 import sys
-
 sys.path.append('C:/Snek')
 import folderStructure as fold; reload(fold);
-
 fold.tk_folderStructure()
-
 '''
 
 
@@ -34,11 +30,13 @@ class tk_folderStructure():
 
         self.widgetsUI["assetCheck"] = cmds.checkBox(label = 'Create Asset folder', align = 'center',onc=self.tk_unHideSelections,ofc=self.tk_hideSelections)
         self.widgetsUI["texCheck"] = cmds.checkBox(label = 'Create Texture subfolder', align = 'center',en = False)
-
         self.widgetsUI["documentCheck"] = cmds.checkBox(label = 'Create Documentation folder', align = 'center')
+        self.widgetsUI["renderCheck"] = cmds.checkBox(label = 'Create Render folder', align = 'center')
+
         self.widgetsUI["setRoot"] = cmds.button(label = "Set root folder",bgc=(.5,.5,.5), c = self.tk_setRootFolder,w=490,h=30,align = 'center')
         self.widgetsUI["processButton"] = cmds.button(label = "Process",bgc=(.5,.5,.5), c = self.tk_process,w=490,h=30, align = 'center')
         self.widgetsUI["setMaya"] = cmds.button(label = "Maya",bgc=(.5,.5,.5), c = self.tk_saveMayaFile,w=490,h=30,align = 'center')
+        self.widgetsUI["setCustom"] = cmds.button(label = "Create custom folders",bgc=(.5,.5,.5), c = self.tk_saveMayaFile,w=490,h=30,align = 'center')
         self.widgetsUI["processTexturesButton"] = cmds.button(label = "Process Textures in current project",bgc=(.5,.5,.5), c = self.tk_processTex,w=490,h=30, align = 'center')
 
 
@@ -47,21 +45,23 @@ class tk_folderStructure():
 
         #set default address
         if os.name == 'nt':
-            self.widgetsUI["targetDir_textField"] = cmds.textField(text = 'C:/' , w=490, h=25)
-            self.rootPath = "C:/"
+            self.widgetsUI["targetDir_textField"] = cmds.textField(text = 'C:' , w=490, h=25)
+            self.rootPath = "C:"
         if os.name == 'posix':
             self.widgetsUI["targetDir_textField"] = cmds.textField(text = '/users/shared' , w=490, h=25)
             self.rootPath = "/users/shared"
 
         #place stuff
         cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['projectName_textField'],'top', 115), (self.widgetsUI['targetDir_textField'], 'left', 5)])
+        cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['renderCheck'],'top', 0), (self.widgetsUI['renderCheck'], 'left', 200)])
         cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['targetDir_textField'],'top', 175), (self.widgetsUI['targetDir_textField'], 'left', 5)])
         cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['default_textTwo'],'top', 100), (self.widgetsUI['default_text'], 'left', 5)])
         cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['default_text'],'top', 160), (self.widgetsUI['default_text'], 'left', 5)])
         cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['setRoot'],'top', 200), (self.widgetsUI['setRoot'], 'left', 5)])
-        cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['processButton'],'top', 250), (self.widgetsUI['processButton'], 'left', 5)])
+        cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['processButton'],'top', 240), (self.widgetsUI['processButton'], 'left', 5)])
         cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['setMaya'],'top', 275), (self.widgetsUI['setMaya'], 'left', 5)])
         cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['processTexturesButton'],'top', 350), (self.widgetsUI['processTexturesButton'], 'left', 5)])
+        cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['setCustom'],'top', 320), (self.widgetsUI['setCustom'], 'left', 5)])
         cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['assetCheck'],'top', 0), (self.widgetsUI['assetCheck'], 'left', 5)])
         cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['texCheck'],'top', 25), (self.widgetsUI['texCheck'], 'left', 5)])
         cmds.formLayout(self.widgetsUI['mainForm'], edit=1, af=[(self.widgetsUI['documentCheck'],'top', 50), (self.widgetsUI['documentCheck'], 'left', 5)])
@@ -81,54 +81,37 @@ class tk_folderStructure():
         assetCheck = cmds.checkBox(self.widgetsUI['assetCheck'], query= True, value = True)
         textureCheck = cmds.checkBox(self.widgetsUI['texCheck'], query= True, value = True)
         documentCheck = cmds.checkBox(self.widgetsUI['documentCheck'], query= True, value = True)
+        renderCheck = cmds.checkBox(self.widgetsUI['renderCheck'], query= True, value = True)
 
         if os.name == 'nt':
-            if not os.path.exists('C:/Snek'):
-                os.mkdir('C:/Snek')
-                print('Directory Made')
+            if not os.path.exists(self.rootPath +"/" + self.projectName):
+                os.mkdir(self.rootPath +"/" + self.projectName)
             else:
-                print('Using existing directory at C:/Snek/')
-
-            if textCheck == True:
-                print "Creating Texture Directory..."
-                if not os.path.exists('C:/Snek/Textures'):
-                    os.mkdir('C:/Snek/Textures')
-                else:
-                    print('Directory already exists at C:/Snek/Textures')
-
-            if documentCheck == True:
-                print "Creating Documentation Directory..."
-                if not os.path.exists('C:/Snek/Documentation'):
-                    os.mkdir('C:/Snek/Documentation')
-                else:
-                    print('Directory already exists at C:/Snek/Documentation')
+                print('Using existing directory at: ' + self.rootPath +"/" + self.projectName)
+                if assetCheck == True:
+                    self.tk_createFolder("Assets")
+                if textureCheck == True:
+                    self.tk_createFolder("Assets/Textures")
+                if documentCheck == True:
+                    self.tk_createFolder("Documentation")
+                if renderCheck == True:
+                    self.tk_createFolder("Renders")
+                print 'Process complete \n\n'
 
         if os.name == 'posix':
             if not os.path.exists(self.rootPath +"/" + self.projectName):
                 os.mkdir(self.rootPath +"/" + self.projectName)
             else:
                 print('Using existing directory at: ' + self.rootPath +"/" + self.projectName)
-
             if assetCheck == True:
-                if not os.path.exists(self.rootPath + "/"+self.projectName + "/Assets"):
-                    os.mkdir(self.rootPath + "/"+ self.projectName + "/Assets")
-                    print ("Assets path created at "+self.rootPath + "/"+ self.projectName + "/Assets")
-                else:
-                    print('Directory already exists at: ' + self.rootPath + "/"+ self.projectName + "/Assets")
-                if textureCheck == True:
-                    if not os.path.exists(self.rootPath + "/"+self.projectName + "/Assets/Textures"):
-                        os.mkdir(self.rootPath + "/"+ self.projectName + "/Assets/Textures")
-                        print ("Assets path created at "+self.rootPath + "/"+ self.projectName + "/Assets/Textures")
-                    else:
-                        print('Directory already exists at: ' + self.rootPath + "/" + self.projectName + "/Assets/Textures")
+                self.tk_createFolder("Assets")
+            if textureCheck == True:
+                self.tk_createFolder("Assets/Textures")
             if documentCheck == True:
-                if not os.path.exists(self.rootPath + "/"+self.projectName + "/Documentation"):
-                    os.mkdir(self.rootPath + "/"+ self.projectName + "/Documentation")
-                    print ("Documentation path created at "+self.rootPath + "/"+ self.projectName + "/Documentation")
-
-                else:
-                    print('Directory already exists at: ' + self.rootPath + "/" + self.projectName + "/Documentation")
-        print 'Process complete \n\n'
+                self.tk_createFolder("Documentation")
+            if renderCheck == True:
+                self.tk_createFolder("Renders")
+            print 'Process complete \n\n'
 
 
     def tk_unHideSelections(self,*args):
@@ -143,8 +126,12 @@ class tk_folderStructure():
         self.fileDictList = {}
 
         #For every file node Node f get the location and store them
-        for f in self.fileNodes:
-            self.fileDictList[f]=cmds.getAttr('%s.fileTextureName' % f)
+        nodes = cmds.ls(type = 'file')
+        if not len(nodes) == 0:
+            for f in self.fileNodes:
+                self.fileDictList[f]=cmds.getAttr('%s.fileTextureName' % f)
+        else:
+            print "No file nodes found"
 
         if self.fileDictList:
             for key in self.fileDictList:
@@ -159,5 +146,22 @@ class tk_folderStructure():
         if not os.path.exists(self.rootPath + "/"+ self.projectName):
             print "Ensure that the project directory has been created"
         else:
-            print (self.rootPath + "/" + self.projectName + "/")
+            nameEntry = cmds.promptDialog(title='Rename...',message='Enter filename:',button=['OK', 'Cancel'],defaultButton='OK',cancelButton='Cancel',dismissString='Cancel')
+            name = cmds.promptDialog(query=True, text = True)
+            print (self.rootPath + "/" + self.projectName + "/"+ name + ".ma")
+            cmds.file(rename= (self.rootPath + "/" + self.projectName + "/"+ name + ".ma"))
             cmds.file(save=True, type="mayaAscii")
+
+    def tk_createFolder(self,folderName):
+        if not os.path.exists(self.rootPath + "/"+self.projectName + "/" + folderName):
+            os.mkdir(self.rootPath + "/"+ self.projectName + "/"  + folderName)
+            print (folderName + " path created at "+self.rootPath + "/"+ self.projectName + "/" + folderName)
+
+        else:
+            print('Directory already exists at: ' + self.rootPath + "/" + self.projectName + "/" + folderName)
+
+    def tk_customFolders(self,*args):
+        numberInput = cmds.promptDialog(title='Rename...',message='Enter filename:',button=['OK', 'Cancel'],defaultButton='OK',cancelButton='Cancel',dismissString='Cancel')
+        number = cmds.promptDialog(query=True, text = True)
+
+        for i
