@@ -36,7 +36,7 @@ class tk_folderStructure():
         self.widgetsUI["setRoot"] = cmds.button(label = "Set root folder",bgc=(.5,.5,.5), c = self.tk_setRootFolder,w=490,h=30,align = 'center')
         self.widgetsUI["processButton"] = cmds.button(label = "Process",bgc=(.5,.5,.5), c = self.tk_process,w=490,h=30, align = 'center')
         self.widgetsUI["setMaya"] = cmds.button(label = "Maya",bgc=(.5,.5,.5), c = self.tk_saveMayaFile,w=490,h=30,align = 'center')
-        self.widgetsUI["setCustom"] = cmds.button(label = "Create custom folders",bgc=(.5,.5,.5), c = self.tk_saveMayaFile,w=490,h=30,align = 'center')
+        self.widgetsUI["setCustom"] = cmds.button(label = "Create custom folders",bgc=(.5,.5,.5), c = self.tk_customFolders,w=490,h=30,align = 'center')
         self.widgetsUI["processTexturesButton"] = cmds.button(label = "Process Textures in current project",bgc=(.5,.5,.5), c = self.tk_processTex,w=490,h=30, align = 'center')
 
 
@@ -161,7 +161,9 @@ class tk_folderStructure():
             print('Directory already exists at: ' + self.rootPath + "/" + self.projectName + "/" + folderName)
 
     def tk_customFolders(self,*args):
-        numberInput = cmds.promptDialog(title='Rename...',message='Enter filename:',button=['OK', 'Cancel'],defaultButton='OK',cancelButton='Cancel',dismissString='Cancel')
-        number = cmds.promptDialog(query=True, text = True)
-
-        for i
+        numberTwo = int(input("Enter a number"))
+        for i in range (0,numberTwo):
+            i=i+1
+            nameEntry = cmds.promptDialog(title='Rename...',message='Enter folder no.' + str(i) +' name:',button=['OK', 'Cancel'],defaultButton='OK',cancelButton='Cancel',dismissString='Cancel')
+            name = cmds.promptDialog(query=True, text = True)
+            self.tk_createFolder(name)
