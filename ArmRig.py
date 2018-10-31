@@ -22,7 +22,7 @@ def gui():
     pm.text('naiming_Text', l="Step 1: Set name options")
     pm.rowColumnLayout(nc=4, cw=[(1,20),(2,40),(3,40),(4,50)])
     pm.text('ori_txt', label='Ori:')
-    pm.optionMenu('Ori_Menu')
+    pm.optionMenu('Ori_Menu', cc = scriptName + '.colorChange()')
     pm.menuItem(label='lf_')
     pm.menuItem(label='rt_')
     pm.menuItem(label='ct_')
@@ -80,3 +80,15 @@ def gui():
 
 
     pm.showWindow()
+
+
+
+def colorChange():
+    ori_Opt = pm.optionMenu('Ori_Menu',q=True,sl=True)
+    if ori_Opt == 1:
+        ori_color = 7
+    if ori_Opt == 2:
+        ori_color = 14
+    if ori_Opt == 3:
+        ori_color = 18
+    pm.colorIndexSliderGrp('armColor', e=True, value=ori_color)
