@@ -58,7 +58,7 @@ def gui():
     pm.menuItem(label='Diamond')
     pm.menuItem(label='Arrow')
     pm.setParent(main_layout)
-    pm.button('testIconButton', l='Make test icon to set scale', w=150)
+    pm.button('testIconButton', l='Make test icon to set scale', w=150, c=scriptName + '.armIconScale()')
     pm.separator('style_Sep', w=150, h=5)
 
     #Icon Colour
@@ -119,3 +119,46 @@ def armTypeVis():
     pm.optionMenu('pvIcon_menu',e=True,vis=ikfk_val)
     pm.text('PV_text',e=True,vis=ik_val)
     pm.radioButtonGrp('addPVElbow_btn',e=True,vis=ik_val)
+
+
+def armIconScale():
+    #variables
+    armType = pm.radioButtonGrp('armType_Btn', q=True,sl=True)
+    ikShape = pm.optionMenu('ikIcon_Menu',q=True, sl=True)
+    fkShape = pm.optionMenu('fkIcon_Menu',q=True, sl=True)
+    pvShape = pm.optionMenu('pvIcon_Menu',q=True, sl=True)
+    handShape = pm.optionMenu('handIcon_menu',q=True, sl=True)
+    pvType = pm.radioButtonGrp('addPVElbow_btn', q=True , sl=True)
+    selected = pm.ls(sl=True, dag=True, type='joint')
+
+    transform_list=[]
+
+    #create IK icon
+    #cube
+    ik_box = pm.curve(n='ik_arm_box_curve', d=1, p=([1,1,=1],[1,1,1],[1,-1,1],[1,-1,-1],[1,1,-1],[-1,1,-1]))
+    ik_box_list = pm.ls(ik_box, dag=True)
+    #4 Arrows
+
+    ik_arrows = pm.curve(n='ik_arm_4Arrows',d=1,p={[1,0,1],[1,0,1.5],[1,0,2],[1,0,2.5],[1,0,3],[2,0,0])
+    ik_arrows_list = pm.ls(ik_arrows, dag=True)
+    pm.setAttribute(ik_arrows_list[0] + '.rotateZ', -90)
+    pm.scale(ik_arrows_list[0], 0.2, 0.2, 0.2)
+    pm.makeIdentity(ik_arrows_list[0],apply=True , t=1, r=1 ,s=1,n=0, pn=1)
+
+    ik_4pin = pm.curve(n='ik_arm_4Arrows',d=1,p={[1,0,1],[1,0,1.5],[1,0,2],[1,0,2.5],[1,0,3],[2,0,0])
+    ik_4pin_list = pm.ls(ik_arrows, dag=True)
+    pm.setAttribute(ik_arrows_list[0] + '.rotateZ', -90)
+    pm.scale(ik_arrows_list[0], 0.2, 0.2, 0.2)
+    pm.makeIdentity(ik_arrows_list[0],apply=True , t=1, r=1 ,s=1,n=0, pn=1)
+
+    #empty group
+    ik_ctrl = pm.grtoup(empty=True , n ='ARM_IK_SCALE_TEST_DONT_DELETE')
+    pm.parent(ik_box_list[1],ik_arrows_list[1],ik_4pin_list[1],r=True, s=True)
+    transform_list.append(ik_box_list[0])
+    transform_list.append(ik_arrows_list[0])
+    transform_list.append(ik_4pin_list[0])
+
+    #setting visibilty
+    if ikShape == 1:
+        pm.setAttr(ik_arrows = 'Shape.v',0)
+        pm.setAttr(ik_4pin + 'Shape.v', 0)
