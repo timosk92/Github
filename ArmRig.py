@@ -26,7 +26,7 @@ def gui():
     pm.menuItem(label='lf_')
     pm.menuItem(label='rt_')
     pm.menuItem(label='ct_')
-    pm.text('label_txt', label='Label::')
+    pm.text('label_txt', label='Label:')
     pm.optionMenu('Label_Menu')
     pm.menuItem(label='Leg')
     pm.menuItem(label='Arm')
@@ -34,7 +34,7 @@ def gui():
 
     #Rig type
     pm.text('rigType_text', label ="step 2: Set rig type")
-    pm.radioButtonGrp("armType_Btn", labelArray3=('IK','FK','IKFK'),numberOfRadioButtons=3,columnWidth3=[50,50,50],select=3)
+    pm.radioButtonGrp("armType_Btn", labelArray3=('IK','FK','IKFK'),numberOfRadioButtons=3,columnWidth3=[50,50,50],select=3, cc=scriptName +'.armTypeVis()')
     pm.separator('rig_Sep', w=150, h=5)
     #Icon options
 
@@ -49,10 +49,11 @@ def gui():
     pm.optionMenu('fkIcon_Menu')
     pm.menuItem(label='Circle')
     pm.menuItem('Turn Arrows')
-    pm.text('handStyle_Text', label ='FK Icon Style:')
+    pm.text('handStyle_Text', label ='Hand Icon Style:')
+    pm.optionMenu('handIcon_menu')
     pm.menuItem(label="Circle")
     pm.menuItem('COG')
-    pm.text('pvStyle_Text', label ='FK Icon Style:')
+    pm.text('pvStyle_Text', label ='PV Icon Style:')
     pm.optionMenu('pvIcon_menu')
     pm.menuItem(label='Diamond')
     pm.menuItem(label='Arrow')
@@ -92,3 +93,29 @@ def colorChange():
     if ori_Opt == 3:
         ori_color = 18
     pm.colorIndexSliderGrp('armColor', e=True, value=ori_color)
+
+def armTypeVis():
+    armType=pm.radioButtonGrp("armType_Btn",q=True, sl=True)
+    if armType == 1:
+        ik_val = 1
+        fk_val = 0
+        ikfk_val = 0
+    if armType == 2:
+        ik_val = 0
+        fk_val = 1
+        ikfk_val = 0
+    if armType == 3:
+        ik_val = 1
+        fk_val = 1
+        ikfk_val = 1
+
+    pm.text('ikStyleText', e=True, vis=ik_val)
+    pm.optionMenu('ikIcon_Menu',e=True, vis=ik_val)
+    pm.text('fkStyle_Text', e=True, vis=fk_val)
+    pm.optionMenu('fkIcon_Menu',e=True, vis=fk_val)
+    pm.optionMenu('handIcon_menu',e=True, vis=ikfk_val)
+    pm.text('handStyle_Text',e=True,vis=ikfk_val)
+    pm.text('pvStyle_Text',e=True, vis=ikfk_val)
+    pm.optionMenu('pvIcon_menu',e=True,vis=ikfk_val)
+    pm.text('PV_text',e=True,vis=ik_val)
+    pm.radioButtonGrp('addPVElbow_btn',e=True,vis=ik_val)
