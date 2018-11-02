@@ -126,39 +126,60 @@ def armIconScale():
     armType = pm.radioButtonGrp('armType_Btn', q=True,sl=True)
     ikShape = pm.optionMenu('ikIcon_Menu',q=True, sl=True)
     fkShape = pm.optionMenu('fkIcon_Menu',q=True, sl=True)
-    pvShape = pm.optionMenu('pvIcon_Menu',q=True, sl=True)
+    pvShape = pm.optionMenu('pvIcon_menu',q=True, sl=True)
     handShape = pm.optionMenu('handIcon_menu',q=True, sl=True)
     pvType = pm.radioButtonGrp('addPVElbow_btn', q=True , sl=True)
     selected = pm.ls(sl=True, dag=True, type='joint')
 
     transform_list=[]
+    icon_test_list=[]
 
     #create IK icon
     #cube
-    ik_box = pm.curve(n='ik_arm_box_curve', d=1, p=([1,1,=1],[1,1,1],[1,-1,1],[1,-1,-1],[1,1,-1],[-1,1,-1]))
+    ik_box = pm.curve(n='ik_arm_box_curve', d=1, p=([1,1,1],[1,1,1],[1,-1,1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,-1],[-1,-1,1],[-1,1,1],[1,1,1],[1,-1,1],[-1,-1,1],[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1]))
     ik_box_list = pm.ls(ik_box, dag=True)
     #4 Arrows
 
-    ik_arrows = pm.curve(n='ik_arm_4Arrows',d=1,p={[1,0,1],[1,0,1.5],[1,0,2],[1,0,2.5],[1,0,3],[2,0,0])
+    ik_arrows = pm.curve(n='ik_arm_4Arrows',d=1,p=([1,0,1],[1,0,1.5],[1,0,2],[1,0,2.5],[1,0,3],[2,0,0]))
     ik_arrows_list = pm.ls(ik_arrows, dag=True)
-    pm.setAttribute(ik_arrows_list[0] + '.rotateZ', -90)
+    pm.setAttr(ik_arrows_list[0] + '.rotateZ', -90)
     pm.scale(ik_arrows_list[0], 0.2, 0.2, 0.2)
     pm.makeIdentity(ik_arrows_list[0],apply=True , t=1, r=1 ,s=1,n=0, pn=1)
 
-    ik_4pin = pm.curve(n='ik_arm_4Arrows',d=1,p={[1,0,1],[1,0,1.5],[1,0,2],[1,0,2.5],[1,0,3],[2,0,0])
+    ik_4pin = pm.curve(n='ik_arm_4Pin',d=1,p=([-1.2,0,0],[-1.276,0.235114,0],[-1.476393,0.380432,0]))
     ik_4pin_list = pm.ls(ik_arrows, dag=True)
-    pm.setAttribute(ik_arrows_list[0] + '.rotateZ', -90)
+    pm.setAttr(ik_arrows_list[0] + '.rotateZ', -90)
     pm.scale(ik_arrows_list[0], 0.2, 0.2, 0.2)
     pm.makeIdentity(ik_arrows_list[0],apply=True , t=1, r=1 ,s=1,n=0, pn=1)
 
     #empty group
-    ik_ctrl = pm.grtoup(empty=True , n ='ARM_IK_SCALE_TEST_DONT_DELETE')
-    pm.parent(ik_box_list[1],ik_arrows_list[1],ik_4pin_list[1],r=True, s=True)
+    ik_ctrl = pm.group(empty=True , n ='ARM_IK_SCALE_TEST_DONT_DELETE')
+    pm.parent(ik_box_list[1],ik_arrows_list[1],ik_4pin_list[1],ik_ctrl, r=True, s=True)
     transform_list.append(ik_box_list[0])
     transform_list.append(ik_arrows_list[0])
     transform_list.append(ik_4pin_list[0])
 
     #setting visibilty
     if ikShape == 1:
-        pm.setAttr(ik_arrows = 'Shape.v',0)
+        pm.setAttr(ik_arrows + 'Shape.v',0)
         pm.setAttr(ik_4pin + 'Shape.v', 0)
+    if ikShape == 1:
+        pm.setAttr(ik_arrows + 'Shape.v',0)
+        pm.setAttr(ik_4pin + 'Shape.v', 0)
+    if ikShape == 1:
+        pm.setAttr(ik_arrows + 'Shape.v',0)
+        pm.setAttr(ik_4pin + 'Shape.v', 0)
+
+    #position the control
+    tempCONST = pm.parentConstraint(selected[1],ik_ctrl, mo=False)
+    pm.delete(tempCONST)
+    tempCONST = pm.parentConstraint(selected[-1],ik_ctrl, mo=False)
+    pm.delete(tempCONST)
+    pm,parentConstraint(selected[-1],ik_ctrl, mo=True)
+    icon_test_list.append(ik_ctrl)
+
+
+
+
+    #crate the icon
+    #cirlce
