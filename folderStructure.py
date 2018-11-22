@@ -75,6 +75,8 @@ class tk_folderStructure():
         self.rootPath = cmds.textField(self.widgetsUI['targetDir_textField'], query= True, text = True)
         self.projectName = cmds.textField(self.widgetsUI['projectName_textField'], query= True, text = True)
         print "Path: " + self.rootPath + "/" + self.projectName
+        if not os.path.exists(self.rootPath +"/" + self.projectName):
+            os.mkdir(self.rootPath +"/" + self.projectName)
 
     def tk_process(self,*args):
         self.tk_setRootFolder()
@@ -123,6 +125,7 @@ class tk_folderStructure():
     def tk_processTex(self,*args):
 
         #empty arrays
+        self.fileNodes = cmds.ls(type='file')
         self.fileDictList = {}
 
         #For every file node Node f get the location and store them
