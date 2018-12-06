@@ -1,5 +1,8 @@
 '''
+Following the tutorial found at:
 https://www.youtube.com/watch?v=bF-PFPacs88
+
+Work In Progress
 '''
 
 
@@ -183,3 +186,9 @@ def armIconScale():
 
     #crate the icon
     #cirlce
+    fk_circle = pm.cirlce(n=fk_arm_circle_curve,c=(0,0,0), nr=(1,0,0) , sw=360, r=1, d=3, ut=0, tol=0.01, s=1)
+    fk_circle_list = pm.ls(fk_circle, dag = True)
+
+    #180
+    fk_turn =
+    fk_turn_list =
